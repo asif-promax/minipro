@@ -6,9 +6,10 @@ const Register = () => {
   const [data, setData] = useState({
     name: "",
     email: "",
+    number: "",
     password: "",
   });
-  const { name, email, password } = data;
+  const { name, email, password, number } = data;
   const handleChange = (event) => {
     setData({ ...data, [event.target.name]: event.target.value });
   };
@@ -62,6 +63,20 @@ const Register = () => {
                 onChange={handleChange}
                 className="border-gray-300 border rounded-lg placeholder:text-sm px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Name"
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="" className="text-xs font-semibold block">
+                Phone number
+              </label>
+              <input
+                type="number"
+                value={number}
+                name="number"
+                onChange={handleChange}
+                className="border-gray-300 border rounded-lg placeholder:text-sm px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Ph no."
                 required
               />
             </div>

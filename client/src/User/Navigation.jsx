@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
-import { Outlet,Link } from "react-router-dom";
+import { Outlet, Link } from "react-router-dom";
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false); // State to manage menu visibility
@@ -28,17 +28,19 @@ const Navigation = () => {
 
             {/* Menu (Visible on Larger Screens) */}
             <div className="hidden md:flex items-center md:gap-10 lg:gap-20">
+              <p className="border px-3 py-1 rounded-2xl border-blue-400 cursor-pointer hover:bg-blue-400 hover:text-white transition duration-300">
+                Home
+              </p>
               <Link to={"/complaint"}>
-                <p className="border px-3 py-1 rounded-2xl border-blue-400 cursor-pointer hover:bg-blue-400 hover:text-white transition duration-300">
-                  Home
+                <p className="cursor-pointer hover:text-blue-400 transition duration-300">
+                  My complaints
                 </p>
               </Link>
-              <p className="cursor-pointer hover:text-blue-400 transition duration-300">
-                My complaints
-              </p>
+              <Link to={"/about"}>
               <p className="cursor-pointer hover:text-blue-400 transition duration-300">
                 About
               </p>
+              </Link>
               <p className="cursor-pointer hover:text-blue-400 transition duration-300">
                 Profile
               </p>

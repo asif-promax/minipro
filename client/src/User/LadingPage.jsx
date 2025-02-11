@@ -1,24 +1,20 @@
-import React, { useState } from "react";
-import { FaBars, FaTimes } from "react-icons/fa"; // Import icons for menu and close
-import { MdArrowForwardIos,MdArrowBackIos } from "react-icons/md";
-import first from "./images/first.png";
-import second from "./images/second.jpg";
+import React from "react";
+import { MdArrowForwardIos, MdArrowBackIos } from "react-icons/md";
+import { SiGmail } from "react-icons/si";
+import { FaFacebookSquare } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
+import first from "../images/first.png";
+import second from "../images/second.jpg";
 
 const LandingPage = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // State to manage menu visibility
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
-
   return (
     <div className="min-h-screen">
       {/* Main Content Section */}
-      <div className="pt-20 flex flex-col md:flex-row md:items-center justify-around md:pl-6  items-center">
+      <div className="pt-20 flex flex-col md:flex-row justify-around md:pl-6  items-center">
         {/* Left Side: Text Content */}
-        <div className="max-w-lg text-center md:w-1/2">
+        <div className="max-w-lg text-justify px-5 md:w-1/2">
           <h1 className="text-4xl font-bold my-4">Welcome to ProofPoint</h1>
-          <p className="text-gray-600 mb-8">
+          <p className="text-gray-600  mb-8">
             Experience a seamless way to report issues with our user-friendly
             platform. Upload photos and videos to provide substantial proof for
             your complaints and track their status effortlessly.
@@ -45,7 +41,7 @@ const LandingPage = () => {
         <div className="max-w-5xl py-3 px-9 m-auto gap-4 grid md:grid-cols-2 lg:grid-cols-3 text-center">
           <p className="bg-gray-300 rounded-2xl py-1.5 ">Waste dumping</p>
           <p className="bg-gray-300 rounded-2xl py-1.5 ">Public nuicense</p>
-          <p className="bg-gray-300 rounded-2xl py-1.5 ">Public nuicense</p>
+          <p className="bg-gray-300 rounded-2xl py-1.5 ">Trafic voilence</p>
           <p className="bg-gray-300 rounded-2xl py-1.5 hidden md:block">
             Public nuicense
           </p>
@@ -128,13 +124,13 @@ const LandingPage = () => {
           </div>
         </div>
       </div>
-      <div className="my-3 max-w-5xl m-auto bg-blue-400 py-3 text-center px-8">
-        <h1 className="text-2xl font-semibold">Feedback</h1>
-        <div className="flex py-4 gap-15  justify-center">
+      <div className="mt-3 bg-blue-400 py-5 text-center px-8">
+        <h1 className="text-2xl font-semibold pb-2 text-gray-200">Feedback</h1>
+        <div className="max-w-4xl m-auto flex py-4 gap-15  justify-center">
           <div className="flex items-center ">
-            <MdArrowBackIos />
+            <MdArrowBackIos className="text-gray-200" />
           </div>
-          <div className="border w-3/6  rounded-lg text-left">
+          <div className="bg-gray-200 w-3/6  rounded-lg text-left">
             <img
               className="w-15 m-2 h-15 float-left"
               src="https://images.pexels.com/photos/2955376/pexels-photo-2955376.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
@@ -143,9 +139,9 @@ const LandingPage = () => {
             <p>Jorge</p>
             <span className="text-sm">This is awsome website</span>
           </div>
-          <div className="hidden sm:block border w-3/6  rounded-lg text-left">
+          <div className="hidden sm:block w-3/6 bg-gray-200 rounded-lg text-left">
             <img
-              className="w-15 h-15 m-2 float-left"
+              className="w-16 h-16 m-2 float-left"
               src="https://images.pexels.com/photos/927022/pexels-photo-927022.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
               alt=""
             />
@@ -153,10 +149,29 @@ const LandingPage = () => {
             <span className="text-sm">This is awsome website</span>
           </div>
           <div className="flex items-center">
-            <MdArrowForwardIos />
+            <MdArrowForwardIos className="text-gray-200" />
           </div>
         </div>
+        <div className="pt-4 flex gap-2 justify-center text-gray-800 ">
+          <div className="w-16 h-16 m-2 bg-gray-500 rounded-full"></div>
+          <input type="text" placeholder="Write your Feedback ?" className="rounded-lg md:w-72  ps-3 bg-gray-200" />
+        </div>
       </div>
+      <div className="md:flex justify-between border-y px-20 items-center text-sm">
+        <div className="flex gap-10">
+          <p>My complaints</p>
+          <p>about</p>
+          <p>profile</p>
+        </div>
+        <div className="flex gap-4">
+          <SiGmail />
+          <FaFacebookSquare />
+          <FaXTwitter />
+        </div>
+      </div>
+      <p className="text-center text-sm">
+        © PROOFPOINT 2025 | Empowering Citizens, Improving Communities.
+      </p>
     </div>
   );
 };
