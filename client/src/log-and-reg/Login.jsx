@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 
 const Login = () => {
@@ -7,6 +9,7 @@ const Login = () => {
     email: "",
     password: "",
   });
+  const navigation = useNavigate();
   const { email, password } = data;
   const handleChange = (event) => {
     setData({ ...data, [event.target.name]: event.target.value });
@@ -15,17 +18,24 @@ const Login = () => {
     event.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/auth/login",
+        "http://localhost:5000/auth/login",
         data
       );
-      console.log(response.data);
+      console.log(response);
+      if (response.status === 201) {
+        localStorage.setItem("token", response.data.token);
+        await navigation("/landing");
+      }
     } catch (error) {
+      toast.error("login failed");
       console.error(error.response.data);
     }
+    console.log(data);
   };
   return (
     <div className=" min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-300 via-indigo-500  to-blue-900">
       <div className="w-full max-w-3xl bg-white flex flex-col sm:flex-row">
+        <ToastContainer position="top-center" autoClose={1500} />
         <div className="p-8 space-y-5 flex flex-col justify-center text-center sm:w-3/6 bg-contain bg-gradient-to-t from-blue-900 to-blue-700">
           <h1
             style={{ fontFamily: "'Sofia', sans-serif" }}

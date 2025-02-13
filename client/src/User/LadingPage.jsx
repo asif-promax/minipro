@@ -5,6 +5,7 @@ import { FaFacebookSquare } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import first from "../images/first.png";
 import second from "../images/second.jpg";
+import { Link } from "react-router-dom";
 
 const LandingPage = () => {
   return (
@@ -19,9 +20,11 @@ const LandingPage = () => {
             platform. Upload photos and videos to provide substantial proof for
             your complaints and track their status effortlessly.
           </p>
-          <button className="bg-blue-400 text-white px-6 py-2 rounded-lg hover:bg-blue-500 transition duration-300">
-            Complaint Registration
-          </button>
+          <Link to={"form"}>
+            <button className="bg-blue-400 text-white px-6 py-2 rounded-lg hover:bg-blue-500 transition duration-300">
+              Complaint Registration
+            </button>
+          </Link>
         </div>
 
         {/* Right Side: Image */}
@@ -67,10 +70,12 @@ const LandingPage = () => {
             <h1 className="font-semibold text-lg">step 1</h1>
             <p className="flex items-center justify-center">
               click the
-              <button className="bg-blue-400 p-1 rounded-lg">
-                Complaint <br />
-                registration
-              </button>
+              <Link to={"form"}>
+                <button className="bg-blue-400 p-1 rounded-lg">
+                  Complaint <br />
+                  registration
+                </button>
+              </Link>
               button
             </p>
           </div>
@@ -154,7 +159,11 @@ const LandingPage = () => {
         </div>
         <div className="pt-4 flex gap-2 justify-center text-gray-800 ">
           <div className="w-16 h-16 m-2 bg-gray-500 rounded-full"></div>
-          <input type="text" placeholder="Write your Feedback ?" className="rounded-lg md:w-72  ps-3 bg-gray-200" />
+          <input
+            type="text"
+            placeholder="Write your Feedback ?"
+            className="rounded-lg md:w-72  ps-3 bg-gray-200"
+          />
         </div>
       </div>
       <div className="md:flex justify-between border-y px-20 items-center text-sm">

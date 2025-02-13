@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Register = () => {
@@ -9,6 +9,7 @@ const Register = () => {
     number: "",
     password: "",
   });
+  const navigation = useNavigate();
   const { name, email, password, number } = data;
   const handleChange = (event) => {
     setData({ ...data, [event.target.name]: event.target.value });
@@ -17,13 +18,20 @@ const Register = () => {
     event.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/auth/register",
+        "http://localhost:5000/auth/register",
         data
       );
-      console.log(response.data);
+      console.log(response);
+      if (response.status === 201) {
+        localStorage.setItem("token", response.data.token);
+        await navigation("/landing");
+      }
+
+      setData({ name: "", email: "", number: "", password: "" });
     } catch (error) {
       console.error(error.response.data);
     }
+    console.log(data);
   };
   return (
     <div className=" min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-300 via-indigo-500  to-blue-900">

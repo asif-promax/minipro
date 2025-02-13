@@ -4,7 +4,7 @@ import { Outlet } from "react-router-dom";
 const Mycomplaints = () => {
   return (
     <>
-      <div className="px-12 pt-28 bg-amber-300 min-h-screen">
+      <div className="px-12 pt-28 min-h-screen">
         
           <div className="border-b pb-4 space-y-4">
             <h1 className="text-4xl">Our Complaints</h1>
