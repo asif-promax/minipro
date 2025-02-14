@@ -14,19 +14,19 @@ import ComplaintManagement from "./admin/Complaintmanagment"; // Fixed typo
 import Dashboard from "./admin/Dashboard";
 import { Outlet } from "react-router-dom";
 
-const NavigationLayout = () => (
-  <>
-    <Navigation />
-    <Outlet />
-  </>
-);
+// const NavigationLayout = () => (
+//   <>
+//     <Navigation />
+//     <Outlet />
+//   </>
+// );
 
-const SidebarLayout = () => (
-  <>
-    <Sidebar />
-    <Outlet />
-  </>
-);
+// const SidebarLayout = () => (
+//   <>
+//     <Sidebar />
+//     <Outlet />
+//   </>
+// );
 
 const App = () => {
   return (
@@ -36,9 +36,9 @@ const App = () => {
         <Route path="/reg" element={<Register />} />
         <Route path="/manage" element={<Management />} />
         {/* <Route path="/form" element={<Form />} /> */}
-        
+
         {/* User Routes */}
-        <Route path="/landing" element={<NavigationLayout />}>
+        <Route path="/landing" element={<Navigation />}>
           <Route index element={<LandingPage />} />
           <Route path="complaint" element={<MyComplaints />} />
           <Route path="about" element={<About />} />
@@ -46,11 +46,11 @@ const App = () => {
         </Route>
 
         {/* Admin Routes */}
-        <Route path="/admin" element={<SidebarLayout />}>
-          <Route index element={<Complaint />} />
+        <Route path="/admin" element={<Sidebar />}>
+          <Route index element={<Dashboard />} />
+          <Route path="Complaint" element={<Complaint />} />
           <Route path="user" element={<User />} />
           <Route path="complaintmanage" element={<ComplaintManagement />} />
-          <Route path="dashboard" element={<Dashboard />} />
         </Route>
       </Routes>
     </BrowserRouter>

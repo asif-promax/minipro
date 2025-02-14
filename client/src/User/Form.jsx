@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 const Form = () => {
   const [formData, setFormData] = useState({
@@ -49,11 +50,27 @@ const Form = () => {
     }));
   };
 
-  // Handle form submission
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    alert("Form submitted successfully!");
-    console.log("Form submitted:", formData);
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/auth/complaintRegistration",
+        formData
+      );
+      alert("Form submitted successfully!");
+      console.log("Form submitted:", formData);
+      formData({
+        model: "",
+        complaintType: "",
+        place: "",
+        district: "",
+        date: "",
+        time: "",
+        proof: null,
+      });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -178,13 +195,13 @@ const Form = () => {
           {/* Proof File Upload */}
           <div>
             <label className="block text-sm font-medium mb-1">Proof</label>
-            <div className="bg-blue-300 rounded-lg p-2">
+            <div className="bg-blue-300 rounded-lg">
               <input
                 type="file"
                 name="proof"
                 onChange={handleChange}
                 accept="image/*, video/*"
-                className="block w-full px-3 py-2 rounded-lg bg-white"
+                className="block w-54 m-auto px-3 py-2 rounded-lg"
               />
             </div>
           </div>

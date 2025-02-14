@@ -28,17 +28,17 @@ const Navigation = () => {
 
             {/* Menu (Visible on Larger Screens) */}
             <div className="hidden md:flex items-center md:gap-10 lg:gap-20">
-              <Link to={"/"}>
+              <Link to={"/landing"}>
                 <p className="border px-3 py-1 rounded-2xl border-blue-400 cursor-pointer hover:bg-blue-400 hover:text-white transition duration-300">
                   Home
                 </p>
               </Link>
-              <Link to={"/complaint"}>
+              <Link to={"complaint"}>
                 <p className="cursor-pointer hover:text-blue-400 transition duration-300">
                   My complaints
                 </p>
               </Link>
-              <Link to={"/about"}>
+              <Link to={"about"}>
                 <p className="cursor-pointer hover:text-blue-400 transition duration-300">
                   About
                 </p>
@@ -60,17 +60,17 @@ const Navigation = () => {
           {isMenuOpen && (
             <div className="md:hidden mt-4">
               <div className="flex flex-col items-center gap-1">
-              <Link to={"/"} className="w-full">
+              <Link to={"/landing"} className="w-full">
                 <p className=" text-black border text-center w-full py-1 rounded-2xl border-blue-400 cursor-pointer hover:bg-blue-400 hover:text-white transition duration-300">
                   Home
                 </p>
                 </Link>
-                <Link to={"/complaint"} className="w-full">
+                <Link to={"complaint"} className="w-full">
                 <p className="rounded-2xl cursor-pointer py-1 hover:bg-blue-400 block w-full text-center transition duration-300">
                   My complaints
                 </p>
                 </Link>
-                <Link to={"/about"} className="w-full">
+                <Link to={"about"} className="w-full">
                 <p className="rounded-2xl cursor-pointer py-1 hover:bg-blue-400 block w-full text-center transition duration-300">
                   About
                 </p>
@@ -88,7 +88,7 @@ const Navigation = () => {
           )}
         </div>
       </div>
-      {/* <Outlet /> */}
+      <Outlet />
     </>
   );
 };

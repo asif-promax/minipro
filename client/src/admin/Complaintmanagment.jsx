@@ -1,70 +1,165 @@
-import React, { useState } from "react";
-import { PiDownloadSimple } from "react-icons/pi";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
-const Complaintmanagment = () => {
-  const [complaintmodel, setComplaintmodel] = useState("");
-  const file = [
-    {
-      data: "grefewrtsfdghfghf",
-    },
-    {
-      data: "grefewrtsfdghfghf",
-    },
-    {
-      data: "grefewrtsfdghfghf",
-    },
-    {
-      data: "grefewrtsfdghfghf",
-    },
-    {
-      data: "grefewrtsfdghfghf",
-    },
-  ];
+const API_URL = "http://localhost:5000/complaint";
+
+const ComplaintManagement = () => {
+  const [complaintModels, setComplaintModels] = useState([]);
+  const [complaintModelName, setComplaintModelName] = useState("");
+  const [complaintTypes, setComplaintTypes] = useState([]);
+  const [newComplaintType, setNewComplaintType] = useState("");
+
+  // Fetch all complaint models from the backend
+  useEffect(() => {
+    const fetchComplaintModels = async () => {
+      try {
+        const { data } = await axios.get(`${API_URL}/all`);
+        console.log("all data", data);
+
+        setComplaintModels(data);
+      } catch (error) {
+        console.error("Error fetching complaint models:", error);
+      }
+    };
+
+    fetchComplaintModels();
+    // console.log("ComplaintModels",complaintModels);
+  }, []);
+
+  // Add a new complaint model with types
+  const handleAddComplaintModel = async () => {
+    if (!complaintModelName || complaintTypes.length === 0) {
+      alert(
+        "Please enter a complaint model and add at least one complaint type."
+      );
+      return;
+    }
+
+    try {
+      await axios.post(`${API_URL}/add`, {
+        models: complaintModelName,
+        complaintTypes: complaintTypes,
+      });
+      // console.log("complaintModelName",complaintModelName);
+      // console.log("ComplaintTypes",complaintTypes);
+
+      // Clear input fields
+      setComplaintModelName("");
+      setComplaintTypes([]);
+
+      // Fetch updated data
+      const { data } = await axios.get(`${API_URL}/all`);
+      setComplaintModels(data);
+      // console.log("new ComplaintModels",complaintModels);
+    } catch (error) {
+      console.error("Error adding complaint model:", error);
+    }
+  };
+
+  // Delete a complaint model
+  const handleDeleteComplaintModel = async (id) => {
+    try {
+      await axios.delete(`${API_URL}/delete/${id}`);
+      setComplaintModels((prevModels) =>
+        prevModels.filter((model) => model._id !== id)
+      );
+    } catch (error) {
+      console.error("Error deleting complaint model:", error);
+    }
+  };
+
   return (
     <div className="p-4">
-      <div className="flex justify-between border-b border-white">
-        <p>Manage complaints</p>
-        <div className="flex items-center gap-1">
-          <PiDownloadSimple />
-          <p>Download</p>
+      <h2 className="text-xl font-semibold">Manage Complaints</h2>
+
+      {/* Complaint Model & Type Input */}
+      <div className="flex flex-col sm:flex-row gap-4 mt-4">
+        <div className="bg-white p-4 rounded-lg w-full">
+          <label className="block font-medium">Complaint Model</label>
+          <input
+            type="text"
+            className="border w-full p-2 rounded mt-2"
+            value={complaintModelName}
+            onChange={(e) => setComplaintModelName(e.target.value)}
+          />
+
+          <label className="block font-medium mt-4">Complaint Types</label>
+          <div className="flex gap-2 mt-2">
+            <input
+              type="text"
+              className="border w-full p-2 rounded"
+              value={newComplaintType}
+              onChange={(e) => setNewComplaintType(e.target.value)}
+            />
+            <button
+              onClick={() => {
+                if (newComplaintType) {
+                  setComplaintTypes([...complaintTypes, newComplaintType]);
+                  setNewComplaintType("");
+                }
+              }}
+              className="bg-blue-500 text-white px-3 py-1 rounded"
+            >
+              Add
+            </button>
+          </div>
+
+          <div className="mt-2">
+            {complaintTypes.map((type, index) => (
+              <div
+                key={index}
+                className="flex justify-between items-center border-b py-1"
+              >
+                <p>{type}</p>
+                <button
+                  onClick={() =>
+                    setComplaintTypes(
+                      complaintTypes.filter((_, i) => i !== index)
+                    )
+                  }
+                  className="text-red-500 text-sm"
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <button
+            onClick={handleAddComplaintModel}
+            className="bg-green-500 text-white px-3 py-1 mt-4 rounded w-full"
+          >
+            Add Complaint Model
+          </button>
         </div>
       </div>
-      <div className="flex flex-col sm:flex-row">
-        <div className="w-full md:w-1/2 space-y-1 mb-4 bg-white py-3 px-5 rounded-s-lg mt-2">
-          <p>Add complaint models</p>
-          <input type="text" className="border bg-white w-full py-1.5" />
-        </div>
-        <div className="w-full md:w-1/2 space-y-1 mb-4 bg-white py-3 px-5 rounded-e-lg mt-2">
-          <p>Add complaints</p>
-          <input type="text" className="border bg-white w-full py-1.5" />
-        </div>
-      </div>
-      <div className="flex flex-col sm:flex-row gap-3">
-        <div className="text-center border sm:w-1/2 bg-white">
-          <h1 className="py-1.5">All complaint models</h1>
-          {file.map((item) => (
-            <div className="flex justify-between px-3 border-t">
-              <p className=" py-0.5">item.data</p>
-              <button className="bg-blue-200 text-xs px-2 rounded-lg my-1">
-                delete
+
+      {/* Display Complaint Models */}
+      <div className="mt-6 bg-white p-4 rounded-lg">
+        <h3 className="text-lg font-semibold">All Complaint Models</h3>
+        {complaintModels.length > 0 ? (
+          complaintModels.map((model) => (
+            <div key={model._id} className="border-b py-2">
+              <h4 className="font-medium">{model.name}</h4>
+              <ul className="ml-4 text-sm text-gray-600">
+                {model.complaintTypes.map((type, index) => (
+                  <li key={index}>- {type}</li>
+                ))}
+              </ul>
+              <button
+                onClick={() => handleDeleteComplaintModel(model._id)}
+                className="bg-red-500 text-white px-3 py-1 mt-2 rounded"
+              >
+                Delete
               </button>
             </div>
-          ))}
-        </div>
-        <div className="text-center border sm:w-1/2 bg-white">
-          <h1 className="py-1.5">All complaints</h1>
-          {file.map((item) => (
-            <div className="flex justify-between px-3 border-t">
-              <p className=" py-0.5">item.data</p>
-              <button className="bg-blue-200 text-xs px-2 rounded-lg my-1">
-                delete
-              </button>
-            </div>
-          ))}
-        </div>
+          ))
+        ) : (
+          <p className="text-gray-500">No complaint models available.</p>
+        )}
       </div>
     </div>
   );
 };
 
-export default Complaintmanagment;
+export default ComplaintManagement;

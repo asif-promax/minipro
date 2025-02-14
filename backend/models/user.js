@@ -21,11 +21,38 @@ const userSchema = new mongoose.Schema({
   },
 });
 userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next(); // Fix: Correct syntax
-
+  if (!this.isModified("password")) return next();
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
   next();
 });
 
 module.exports = mongoose.model("User", userSchema);
+
+
+// const complaintSchema=new mongoose.Schema({
+//   model:{
+//     type:String,
+//     required:true,
+//   },
+//   complaintTypee:{
+//     type:String,
+//     required:true,
+//   },
+//   place:{
+//     type:String,
+//     required:true,
+//   },
+//   district:{
+//     type:String,
+//     required:true,
+//   },
+//   date:{
+//     type:String,
+//     required:true,
+//   },
+//   time:{
+//     type:String,
+//     required:true,
+//   },
+// })
