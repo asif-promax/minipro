@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
+
+const API_URL = "http://localhost:5000/complaint";
 
 const Form = () => {
   const [formData, setFormData] = useState({
@@ -11,39 +13,25 @@ const Form = () => {
     time: "",
     proof: null,
   });
+  const [complaintModels, setComplaintModels] = useState([]);
 
-  // Options based on complaint model
-  const complaintOptions = {
-    "Traffic violations": [
-      "Driving without a valid license",
-      "Driving without insurance",
-      "Over speeding",
-      "Using a mobile phone while driving",
-      "Not wearing a seatbelt",
-      "Driving under the influence of alcohol",
-      "Improper parking / Ignoring traffic signals",
-      "Overtaking from the wrong side",
-      "Not giving way to emergency vehicles",
-      "Driving a vehicle with faulty lights or registration plates",
-    ],
-    "Public nuisance": [
-      "Obstructing public roads",
-      "Excessive noise pollution",
-      "Improper waste disposal",
-      "Air pollution from factories",
-      "Operating a house of prostitution",
-      "Unauthorized encroachments on public spaces",
-      "Digging holes on roads",
-      "Exploding fireworks in public areas",
-      "Keeping vicious animals",
-      "Practicing medicine without a valid license",
-    ],
-  };
+  useEffect(() => {
+    const fetchComplaintModels = async () => {
+      try {
+        const { data } = await axios.get(`${API_URL}/all`);
+        console.log("All Complaint Models:", data);
+        setComplaintModels(data);
+      } catch (error) {
+        console.error("Error fetching complaint models:", error);
+      }
+    };
+
+    fetchComplaintModels();
+  }, []);
 
   // Handle input change
   const handleChange = (event) => {
     const { name, value, type, files } = event.target;
-
     setFormData((prevData) => ({
       ...prevData,
       [name]: type === "file" ? files[0] : value,
@@ -52,25 +40,25 @@ const Form = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    try {
-      const response = await axios.post(
-        "http://localhost:5000/auth/complaintRegistration",
-        formData
-      );
-      alert("Form submitted successfully!");
-      console.log("Form submitted:", formData);
-      formData({
-        model: "",
-        complaintType: "",
-        place: "",
-        district: "",
-        date: "",
-        time: "",
-        proof: null,
-      });
-    } catch (error) {
-      console.error(error);
-    }
+    console.log("all", formData);
+
+    // try {
+    //   await axios.post(`${API_URL}/add`, formData);
+    //   alert("Form submitted successfully!");
+
+    //   // Reset form data
+    //   setFormData({
+    //     model: "",
+    //     complaintType: "",
+    //     place: "",
+    //     district: "",
+    //     date: "",
+    //     time: "",
+    //     proof: null,
+    //   });
+    // } catch (error) {
+    //   console.error("Error submitting form:", error);
+    // }
   };
 
   return (
@@ -98,8 +86,11 @@ const Form = () => {
               className="w-full px-3 py-2 border rounded-lg border-blue-300"
             >
               <option value="">Select Complaint Model</option>
-              <option value="Traffic violations">Traffic Violations</option>
-              <option value="Public nuisance">Public Nuisance</option>
+              {complaintModels.map((option, index) => (
+                <option key={index} value={option.models}>
+                  {option.models}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -113,14 +104,15 @@ const Form = () => {
               value={formData.complaintType}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border rounded-lg border-blue-300 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border rounded-lg border-blue-300"
               disabled={!formData.model} // Disable until model is selected
             >
               <option value="">Select Complaint Type</option>
-              {formData.model &&
-                complaintOptions[formData.model].map((option, index) => (
-                  <option key={index} value={option}>
-                    {option}
+              {complaintModels
+                .find((model) => model.models === formData.model)
+                ?.complaintTypes.map((type, index) => (
+                  <option key={index} value={type}>
+                    {type}
                   </option>
                 ))}
             </select>
@@ -139,8 +131,10 @@ const Form = () => {
               placeholder="Enter the place"
             />
           </div>
+
+          {/* District Selection */}
           <div>
-            <label className="block text-sm font-medium mb-1">district</label>
+            <label className="block text-sm font-medium mb-1">District</label>
             <select
               name="district"
               value={formData.district}
@@ -148,21 +142,27 @@ const Form = () => {
               required
               className="w-full px-3 py-2 border rounded-lg border-blue-300"
             >
-              <option value="">Select district</option>
-              <option value="Thiruvananthapuram">Thiruvananthapuram</option>
-              <option value="Kollam">Kollam</option>
-              <option value="Alappuzha">Alappuzha</option>
-              <option value="Pathanamthitta">Pathanamthitta</option>
-              <option value="Kottayam">Kottayam</option>
-              <option value="Idukki">Idukki</option>
-              <option value="Ernakulam">Ernakulam</option>
-              <option value="Thrissur">Thrissur</option>
-              <option value="Palakkad">Palakkad</option>
-              <option value="Malappuram">Malappuram</option>
-              <option value="Kozhikode">Kozhikode</option>
-              <option value="Wayanad">Wayanad</option>
-              <option value="Kannur">Kannur</option>
-              <option value="Kasaragod">Kasaragod</option>
+              <option value="">Select District</option>
+              {[
+                "Thiruvananthapuram",
+                "Kollam",
+                "Alappuzha",
+                "Pathanamthitta",
+                "Kottayam",
+                "Idukki",
+                "Ernakulam",
+                "Thrissur",
+                "Palakkad",
+                "Malappuram",
+                "Kozhikode",
+                "Wayanad",
+                "Kannur",
+                "Kasaragod",
+              ].map((district, index) => (
+                <option key={index} value={district}>
+                  {district}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -175,7 +175,7 @@ const Form = () => {
               value={formData.date}
               onChange={handleChange}
               required
-              className="border-blue-300 w-full px-3 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
+              className="border-blue-300 w-full px-3 py-2 border rounded-lg"
             />
           </div>
 
@@ -188,7 +188,7 @@ const Form = () => {
               value={formData.time}
               onChange={handleChange}
               required
-              className="border-blue-300 w-full px-3 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
+              className="border-blue-300 w-full px-3 py-2 border rounded-lg"
             />
           </div>
 

@@ -102,7 +102,7 @@ const User = () => {
               <td className="border border-gray-300 px-4 py-2">{row.name}</td>
               <td className="border border-gray-300 px-4 py-2">{row.num}</td>
               <td className="border border-gray-300 px-4 py-2">{row.email}</td>
-              <td className="border border-gray-300 px-4 py-2">delete</td>
+              <td className="border border-gray-300 px-4 py-2"><button className="w-full bg-amber-200">delete</button></td>
             </tr>
           ))}
         </tbody>

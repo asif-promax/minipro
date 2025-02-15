@@ -68,6 +68,30 @@ const ComplaintManagement = () => {
     }
   };
 
+  const handleDeleteComplaintType = async (modelId, typeToRemove) => {
+    try {
+      await axios.put(`${API_URL}/remove-type/${modelId}`, {
+        typeToRemove,
+      });
+
+      // Update the local state to remove the type
+      setComplaintModels((prevModels) =>
+        prevModels.map((model) =>
+          model._id === modelId
+            ? {
+                ...model,
+                complaintTypes: model.complaintTypes.filter(
+                  (type) => type !== typeToRemove
+                ),
+              }
+            : model
+        )
+      );
+    } catch (error) {
+      console.error("Error deleting complaint type:", error);
+    }
+  };
+
   return (
     <div className="p-4">
       <h2 className="text-xl font-semibold">Manage Complaints</h2>
@@ -139,13 +163,22 @@ const ComplaintManagement = () => {
         <h3 className="text-lg font-semibold">All Complaint Models</h3>
         {complaintModels.length > 0 ? (
           complaintModels.map((model) => (
-            <div key={model._id} className="border-b py-2">
-              <h4 className="font-medium">{model.name}</h4>
+            <div key={model._id} className="border-b py-2 flex justify-around items-center">
+              <h4 className="font-medium">{model.models}</h4>
               <ul className="ml-4 text-sm text-gray-600">
                 {model.complaintTypes.map((type, index) => (
-                  <li key={index}>- {type}</li>
+                  <li key={index}>
+                    - {type}
+                    <button
+                      onClick={() => handleDeleteComplaintType(model._id, type)}
+                      className="bg-red-500 text-white ms-3 px-1 py-0.5 rounded-lg"
+                    >
+                      Delete
+                    </button>
+                  </li>
                 ))}
               </ul>
+
               <button
                 onClick={() => handleDeleteComplaintModel(model._id)}
                 className="bg-red-500 text-white px-3 py-1 mt-2 rounded"

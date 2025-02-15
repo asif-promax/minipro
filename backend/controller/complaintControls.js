@@ -73,4 +73,27 @@ router.delete("/delete/:id", async (req, res) => {
   }
 });
 
+router.put("/remove-type/:id", async (req, res) => {
+  try {
+    const { typeToRemove } = req.body;
+    const updatedModel = await ComplaintModel.findByIdAndUpdate(
+      req.params.id,
+      { $pull: { complaintTypes: typeToRemove } }, // Removes the type from the array
+      { new: true }
+    );
+
+    if (!updatedModel) {
+      return res.status(404).json({ message: "Complaint model not found" });
+    }
+
+    res.json({
+      message: "Complaint type removed successfully",
+      updatedModel,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
+
+
 module.exports = router;
