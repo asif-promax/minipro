@@ -1,5 +1,5 @@
 const express = require("express");
-const  ComplaintModel  = require("../models/complaint");
+const ComplaintModel = require("../models/complaintModel");
 
 const router = express.Router();
 
@@ -7,7 +7,7 @@ const router = express.Router();
 router.post("/add", async (req, res) => {
   try {
     const { models, complaintTypes } = req.body;
-    if (!models ||  complaintTypes.length === 0) {
+    if (!models || complaintTypes.length === 0) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
@@ -20,7 +20,6 @@ router.post("/add", async (req, res) => {
 
     const complaintModel = new ComplaintModel({ models, complaintTypes });
     await complaintModel.save();
-
     res
       .status(201)
       .json({ message: "Complaint model added successfully", complaintModel });
@@ -94,6 +93,5 @@ router.put("/remove-type/:id", async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 });
-
 
 module.exports = router;

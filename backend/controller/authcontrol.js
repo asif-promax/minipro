@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 
 exports.register = async (req, res) => {
   try {
-    const { name, number, email, password } = req.body;
+    const { name, number, email, password, role } = req.body;
     if (!name || !email || !password || !number) {
       return res.status(400).json({ message: "data not found" });
     }
@@ -14,20 +14,22 @@ exports.register = async (req, res) => {
       return res.status(400).json({ msg: "alredy exist" });
     }
 
-    const user = new User({ name, number, email, password });
+    const user = new User({ name, number, email, password, role });
     await user.save();
 
-    const token = jwt.sign(
-      {
-        userName: user.name,
-        userEmail: user.email,
-        userNumber: user.number,
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" }
-    );
+    // const token = jwt.sign(
+    //   {
+    //     userId: user._id,
+    //     userName: user.name,
+    //     userEmail: user.email,
+    //     userNumber: user.number,
+    //     role: user.role,
+    //   },
+    //   process.env.JWT_SECRET,
+    //   { expiresIn: "7d" }
+    // );
 
-    return res.status(201).json({ message: "registered succesfull", token });
+    return res.status(201).json({ message: "registered succesfull" });
   } catch (error) {
     console.error(error);
     return res
@@ -52,14 +54,17 @@ exports.login = async (req, res) => {
     }
     const token = jwt.sign(
       {
+        userId: user._id,
         userName: user.name,
         userEmail: user.email,
         userNumber: user.number,
+        // role: user.role,
       },
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
-    return res.status(201).json({ msg: "login successfull", token });
+    const role = user.role;
+    return res.status(201).json({ msg: "login successfull", token ,role});
   } catch (error) {
     console.error(error);
     res.status(500).send("server error");
