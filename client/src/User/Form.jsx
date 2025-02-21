@@ -12,6 +12,7 @@ const Form = () => {
     date: "",
     time: "",
     proof: null,
+
   });
   const [complaintModels, setComplaintModels] = useState([]);
 
@@ -40,26 +41,43 @@ const Form = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log("all", formData);
-
-    // try {
-    //   await axios.post(`${API_URL}/add`, formData);
-    //   alert("Form submitted successfully!");
-
-    //   // Reset form data
-    //   setFormData({
-    //     model: "",
-    //     complaintType: "",
-    //     place: "",
-    //     district: "",
-    //     date: "",
-    //     time: "",
-    //     proof: null,
-    //   });
-    // } catch (error) {
-    //   console.error("Error submitting form:", error);
-    // }
+  
+    const formDataToSend = new FormData();
+    for (const key in formData) {
+      if (formData[key]) {
+        formDataToSend.append(key, formData[key]);
+      }
+    }
+  
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/complaintForm/add",
+        formDataToSend,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${localStorage.getItem("token")}`, // Ensure token is sent
+          },
+        }
+      );
+  
+      console.log("Response:", response.data);
+      alert("Complaint submitted successfully!");
+  
+      setFormData({
+        model: "",
+        complaintType: "",
+        place: "",
+        district: "",
+        date: "",
+        time: "",
+        proof: null,
+      });
+    } catch (error) {
+      console.error("Error submitting complaint:", error);
+    }
   };
+  
 
   return (
     <div className="pt-7 min-h-screen flex flex-col items-center mt-10 justify-center bg-gray-50 p-4">

@@ -32,7 +32,7 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="px-5 min-h-screen">
+    <div className="w-4/5 bg-blue-100 px-5 min-h-screen">
         <div className="flex justify-between border-b py-2 border-white">
             <p>Overview</p>
             <p>Download</p>

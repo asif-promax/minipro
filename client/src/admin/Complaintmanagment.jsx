@@ -93,77 +93,80 @@ const ComplaintManagement = () => {
   };
 
   return (
-    <div className="p-4">
+    <div className="p-4 w-4/5 bg-blue-100">
       <h2 className="text-xl font-semibold">Manage Complaints</h2>
 
       {/* Complaint Model & Type Input */}
-      <div className="flex flex-col sm:flex-row gap-4 mt-4">
-        <div className="bg-white p-4 rounded-lg w-full">
-          <label className="block font-medium">Complaint Model</label>
+      {/* <div className="flex flex-col sm:flex-row gap-4"> */}
+      <div className="bg-white p-4 rounded-lg w-full">
+        <label className="block font-medium">Complaint Model</label>
+        <input
+          type="text"
+          className="border w-full p-2 rounded mt-2"
+          value={complaintModelName}
+          onChange={(e) => setComplaintModelName(e.target.value)}
+        />
+
+        <label className="block font-medium mt-4">Complaint Types</label>
+        <div className="flex gap-2 mt-2">
           <input
             type="text"
-            className="border w-full p-2 rounded mt-2"
-            value={complaintModelName}
-            onChange={(e) => setComplaintModelName(e.target.value)}
+            className="border w-full p-2 rounded"
+            value={newComplaintType}
+            onChange={(e) => setNewComplaintType(e.target.value)}
           />
-
-          <label className="block font-medium mt-4">Complaint Types</label>
-          <div className="flex gap-2 mt-2">
-            <input
-              type="text"
-              className="border w-full p-2 rounded"
-              value={newComplaintType}
-              onChange={(e) => setNewComplaintType(e.target.value)}
-            />
-            <button
-              onClick={() => {
-                if (newComplaintType) {
-                  setComplaintTypes([...complaintTypes, newComplaintType]);
-                  setNewComplaintType("");
-                }
-              }}
-              className="bg-blue-500 text-white px-3 py-1 rounded"
-            >
-              Add
-            </button>
-          </div>
-
-          <div className="mt-2">
-            {complaintTypes.map((type, index) => (
-              <div
-                key={index}
-                className="flex justify-between items-center border-b py-1"
-              >
-                <p>{type}</p>
-                <button
-                  onClick={() =>
-                    setComplaintTypes(
-                      complaintTypes.filter((_, i) => i !== index)
-                    )
-                  }
-                  className="text-red-500 text-sm"
-                >
-                  Remove
-                </button>
-              </div>
-            ))}
-          </div>
-
           <button
-            onClick={handleAddComplaintModel}
-            className="bg-green-500 text-white px-3 py-1 mt-4 rounded w-full"
+            onClick={() => {
+              if (newComplaintType) {
+                setComplaintTypes([...complaintTypes, newComplaintType]);
+                setNewComplaintType("");
+              }
+            }}
+            className="bg-blue-500 text-white px-3 py-1 rounded"
           >
-            Add Complaint Model
+            Add
           </button>
         </div>
+
+        <div className="mt-2">
+          {complaintTypes.map((type, index) => (
+            <div
+              key={index}
+              className="flex justify-between items-center border-b py-1"
+            >
+              <p>{type}</p>
+              <button
+                onClick={() =>
+                  setComplaintTypes(
+                    complaintTypes.filter((_, i) => i !== index)
+                  )
+                }
+                className="text-red-500 text-sm"
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+        </div>
+
+        <button
+          onClick={handleAddComplaintModel}
+          className="bg-green-500 text-white px-3 py-1 mt-4 rounded w-full"
+        >
+          Add Complaint Model
+        </button>
       </div>
+      {/* </div> */}
 
       {/* Display Complaint Models */}
       <div className="mt-6 bg-white p-4 rounded-lg">
         <h3 className="text-lg font-semibold">All Complaint Models</h3>
         {complaintModels.length > 0 ? (
           complaintModels.map((model) => (
-            <div key={model._id} className="border-b py-2 flex justify-around items-center">
+            <div
+              key={model._id}
+              className="border-b py-2 flex justify-around items-center"
+            >
               <h4 className="font-medium">{model.models}</h4>
               <ul className="ml-4 text-sm text-gray-600">
                 {model.complaintTypes.map((type, index) => (

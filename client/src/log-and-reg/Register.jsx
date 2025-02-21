@@ -1,132 +1,148 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 
 const Register = () => {
-  const [data, setData] = useState({
+  const [formData, setFormData] = useState({
     name: "",
-    email: "",
     number: "",
+    email: "",
     password: "",
+    role: "user", // Default role is 'user'
   });
-  const navigation = useNavigate();
-  const { name, email, password, number } = data;
-  const handleChange = (event) => {
-    setData({ ...data, [event.target.name]: event.target.value });
-  };
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    try {
-      const response = await axios.post(
-        "http://localhost:5000/auth/register",
-        data
-      );
-      console.log(response);
-      if (response.status === 201) {
-        localStorage.setItem("token", response.data.token);
-        await navigation("/landing");
-      }
 
-      setData({ name: "", email: "", number: "", password: "" });
-    } catch (error) {
-      console.error(error.response.data);
-    }
-    console.log(data);
+  const navigate = useNavigate();
+
+  // Handle Input Change
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
+  // Handle Form Submit
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post("http://localhost:5000/auth/register", formData);
+
+      if (response.status === 201) {
+        toast.success("Registration successful! Redirecting...", { autoClose: 2000 });
+
+        setTimeout(() => {
+          navigate("/"); // Redirect to login page
+        }, 2000);
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.msg || "Registration failed. Try again.");
+      console.error(error.response?.data || "Error during registration");
+    }
+  };
+
   return (
-    <div className=" min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-300 via-indigo-500  to-blue-900">
-      <div className="w-full max-w-3xl bg-white flex flex-col sm:flex-row">
-        <div className="p-8 space-y-5 text-white flex flex-col justify-center text-center sm:w-3/6 bg-contain bg-gradient-to-t from-blue-900 to-blue-700">
-          <h1
-            className="text-3xl font-bold"
-            style={{ fontFamily: "'Sofia', sans-serif" }}
-          >
-            Proofpoint
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-300 via-indigo-500 to-blue-900">
+      <div className="w-full max-w-3xl bg-white flex flex-col sm:flex-row shadow-lg rounded-lg">
+        <ToastContainer position="top-center" autoClose={2000} />
+
+        {/* Left Side */}
+        <div className="p-8 space-y-5 flex flex-col justify-center text-center sm:w-3/6 bg-gradient-to-t from-blue-900 to-blue-700 text-white">
+          <h1 className="text-3xl font-bold" style={{ fontFamily: "'Sofia', sans-serif" }}>
+            Join Proofpoint
           </h1>
           <p className="text-xs">
-            Experience a seamless way to report issues with our user-friendly
-            platform. Upload photos and videos to provide substantial proof for
-            your complaints and track their status effortlessly.
+            Sign up to start reporting issues seamlessly. Provide substantial proof with photos and track your complaints efficiently.
           </p>
         </div>
-        <div className="sm:w-3/6 py-8 px-8 flex flex-col justify-center">
-          <h1
-            style={{ fontFamily: "'Sofia', sans-serif" }}
-            className="text-4xl pb-4 text-center font-extrabold bg-gradient-to-br from-blue-900 to-blue-300 bg-clip-text text-transparent"
-          >
-            <span className="text-xs font-normal block text-black">
-              Welcome to
-            </span>
+
+        {/* Right Side - Register Form */}
+        <div className="sm:w-3/6 py-3 px-7 flex flex-col justify-center">
+          <h1 className="text-4xl pb-4 text-center font-extrabold bg-gradient-to-br from-blue-900 to-blue-300 bg-clip-text text-transparent">
+            <span className="text-xs font-normal block text-black">Create an account</span>
             Proofpoint
           </h1>
-          <form onSubmit={handleSubmit} action="" className="">
-            <div className="space-y-2 mb-3">
-              <label htmlFor="" className="text-xs font-semibold block">
-                Username
-              </label>
+
+          <form onSubmit={handleSubmit} className="space-y-2">
+            {/* Name Field */}
+            <div className="space-y-1">
+              <label className="text-xs font-semibold block">Name</label>
               <input
                 type="text"
-                value={name}
                 name="name"
+                value={formData.name}
                 onChange={handleChange}
-                className="border-gray-300 border rounded-lg placeholder:text-sm px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Name"
+                className="border-gray-300 border rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter your name"
                 required
               />
             </div>
-            <div className="space-y-2">
-              <label htmlFor="" className="text-xs font-semibold block">
-                Phone number
-              </label>
-              <input
-                type="number"
-                value={number}
-                name="number"
-                onChange={handleChange}
-                className="border-gray-300 border rounded-lg placeholder:text-sm px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Ph no."
-                required
-              />
-            </div>
-            <div className="space-y-2 mb-3">
-              <label htmlFor="" className="text-xs font-semibold block">
-                Email
-              </label>
+
+            {/* Email Field */}
+            <div className="space-y-1">
+              <label className="text-xs font-semibold block">Email</label>
               <input
                 type="email"
-                value={email}
                 name="email"
+                value={formData.email}
                 onChange={handleChange}
-                className="border-gray-300 border rounded-lg placeholder:text-sm px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Email"
+                className="border-gray-300 border rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter your email"
                 required
               />
             </div>
-            <div className="space-y-2">
-              <label htmlFor="" className="text-xs font-semibold block">
-                Password
-              </label>
+
+            {/* Phone Number Field */}
+            <div className="space-y-1">
+              <label className="text-xs font-semibold block">Phone Number</label>
+              <input
+                type="text"
+                name="number"
+                value={formData.number}
+                onChange={handleChange}
+                className="border-gray-300 border rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter your phone number"
+                required
+              />
+            </div>
+
+            {/* Password Field */}
+            <div className="space-y-1">
+              <label className="text-xs font-semibold block">Password</label>
               <input
                 type="password"
-                value={password}
                 name="password"
+                value={formData.password}
                 onChange={handleChange}
-                className="border-gray-300 border rounded-lg placeholder:text-sm px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Password"
+                className="border-gray-300 border rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter your password"
                 required
               />
             </div>
-            <div className="space-y-3 pt-5">
-              <button
-                type="submit"
-                className="text-center text-white bg-blue-600 w-full py-2 rounded-lg"
+
+            {/* Optional Admin Registration */}
+            <div className="space-y-1">
+              <label className="text-xs font-semibold block">Register as</label>
+              <select
+                name="role"
+                value={formData.role}
+                onChange={handleChange}
+                className="border-gray-300 border rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                Register
+                <option value="user">User</option>
+                <option value="admin">Admin</option> {/* Only allow for manual approval */}
+              </select>
+            </div>
+
+            {/* Submit Button */}
+            <div className="space-y-1">
+              <button type="submit" className="text-white text-center bg-blue-600 w-full py-2 rounded-lg">
+                Sign Up
               </button>
+
               <p className="text-center text-xs">
-                Do you have alredy an account ?
-                <Link to={"/"} className="text-blue-500 underline">
-                  Sign in
+                Already have an account?{" "}
+                <Link to="/" className="text-blue-500 underline">
+                  Login
                 </Link>
               </p>
             </div>
