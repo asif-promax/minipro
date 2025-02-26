@@ -1,6 +1,10 @@
 import axios from "axios";
 import React, { useEffect, useState, useRef } from "react";
-import { useReactToPrint } from "react-to-print";
+// import Modal from "react-modal";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+
+// Modal.setAppElement("#root");
 
 const Complaint = () => {
   const [complaints, setComplaints] = useState([]);
@@ -67,12 +71,106 @@ const Complaint = () => {
     setIsModalOpen(false);
     setSelectedComplaint(null);
   };
-
-  // Function to download complaint details as PDF
-  const handlePrint = useReactToPrint({
-    content: () => modalRef.current,
-    documentTitle: `Complaint_${selectedComplaint?._id}`,
-  });
+  const generatePDF = async () => {
+    if (!selectedComplaint) return;
+  
+    const doc = new jsPDF({
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4", // A4 size: 210mm x 297mm
+    });
+  
+    const pageWidth = doc.internal.pageSize.getWidth();  // 210mm
+    const pageHeight = doc.internal.pageSize.getHeight(); // 297mm
+    let yOffset = 20; // Starting position
+  
+    // Title
+    doc.setFontSize(20);
+    doc.text("Complaint Details", 14, yOffset);
+    yOffset += 10;
+  
+    // Complaint Details Table
+    const details = [
+      ["Field", "Value"],
+      ["Email", selectedComplaint.user?.email || "No Email"],
+      ["Phone", selectedComplaint.user?.number || "No Phone"],
+      ["Model", selectedComplaint.model],
+      ["Type", selectedComplaint.complaintType],
+      ["Place", selectedComplaint.place + " - " + selectedComplaint.district],
+      ["Date & Time", selectedComplaint.date + " - " + selectedComplaint.time],
+      ["Status", selectedComplaint.status],
+    ];
+  
+    doc.autoTable({
+      startY: yOffset,
+      head: details.slice(0, 1),
+      body: details.slice(1),
+      styles: { fontSize: 10, cellPadding: 2 },
+      columnStyles: { 0: { cellWidth: 50 }, 1: { cellWidth: 130 } }, // Ensure it fits within A4
+    });
+  
+    yOffset = doc.autoTable.previous.finalY + 10; // Move below table
+  
+    // Adding Proof Images
+    if (selectedComplaint.proof.length > 0) {
+      doc.setFontSize(16);
+      doc.text("Proof:", 14, yOffset);
+      yOffset += 10;
+  
+      for (const file of selectedComplaint.proof) {
+        if (file.match(/\.(jpeg|jpg|png)$/)) {
+          try {
+            // Convert image URL to Base64
+            const base64Image = await getBase64FromUrl(file);
+  
+            // Load image to get its original dimensions
+            const img = new Image();
+            img.src = file;
+            await new Promise((resolve) => (img.onload = resolve));
+  
+            // Set max image dimensions to fit within A4 (max width: 180mm, max height: 120mm)
+            const maxWidth = 180;
+            const maxHeight = 120;
+            const aspectRatio = img.width / img.height;
+  
+            let imageWidth = maxWidth;
+            let imageHeight = imageWidth / aspectRatio;
+  
+            if (imageHeight > maxHeight) {
+              imageHeight = maxHeight;
+              imageWidth = imageHeight * aspectRatio;
+            }
+  
+            // Ensure the image doesn't exceed page height
+            if (yOffset + imageHeight > pageHeight - 20) {
+              doc.addPage(); // Add new page if needed
+              yOffset = 20;
+            }
+  
+            doc.addImage(base64Image, "JPEG", 15, yOffset, imageWidth, imageHeight);
+            yOffset += imageHeight + 10; // Adjust spacing
+          } catch (error) {
+            console.error("Error loading image:", error);
+          }
+        }
+      }
+    }
+  
+    doc.save(`Complaint_${selectedComplaint._id}.pdf`);
+  };
+  
+  // Function to convert image URL to Base64
+  const getBase64FromUrl = async (url) => {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(blob);
+      reader.onloadend = () => resolve(reader.result);
+    });
+  };
+  
+  
 
   return (
     <div className="flex-1 h-full p-4">
@@ -219,10 +317,10 @@ const Complaint = () => {
                       {file.match(/\.(jpeg|jpg|png)$/) ? (
                         <div className="h-116 flex justify-center">
                           <img
-                          src={file}
-                          alt="Proof"
-                          className="rounded-md h-118"
-                        />
+                            src={file}
+                            alt="Proof"
+                            className="rounded-md h-118"
+                          />
                         </div>
                       ) : file.match(/\.(mp4|avi|mov)$/) ? (
                         <video controls className="w-full">
@@ -243,7 +341,7 @@ const Complaint = () => {
                   Close
                 </button>
                 <button
-                  onClick={handlePrint}
+                  onClick={generatePDF}
                   className="bg-green-500 text-white px-4 py-2 rounded"
                 >
                   Download PDF
